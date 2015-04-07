@@ -1086,20 +1086,28 @@ uint256 static GetOrphanRoot(const CBlockHeader* pblock)
 
 int64 static GetBlockValue(int nHeight, int64 nFees)
 {
-    int64 nSubsidy = 50 * COIN;
-
-    int halvings = nHeight / 240000;
+    int64 nSubsidy = 1000 * COIN;
 
     if (nHeight <17291)
+    {
         nSubsidy = 347 * COIN;
+    }
     else
      {  
-    	// Force block reward to zero when right shift is undefined.
-    	if (halvings >= 64)
-        	return nFees;
-
-    	// Subsidy is cut in half every 240,000 blocks which will occur approximately every 4 years.
-    	nSubsidy >>= halvings;
+     	if(nHeight < 29200 )
+     	{
+     		nSubsidy = 50 * COIN;
+     	}
+       	else
+    	{
+    		int halvings = (nHeight-29200) / 240000;
+	  // Force block reward to zero when right shift is undefined.
+	    if (halvings >= 64)
+		return nFees;
+	
+	    // Subsidy is cut in half every 240,000 blocks which will occur approximately every 4 years.
+	    nSubsidy >>= halvings;
+    	}
      }
     return nSubsidy + nFees;
 }
